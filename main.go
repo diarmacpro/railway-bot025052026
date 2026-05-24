@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
 	"runtime"
 	"time"
 
@@ -13,17 +12,16 @@ import (
 var startTime = time.Now()
 
 func main() {
-	// Ganti dengan Token NemoruBot Anda
+	// Ganti dengan Token Bot Anda
 	botToken := "8778956451:AAFkfHFetDkvyjNM7ilk55THyiwmWBjju8Y" 
-	
-	bot, err := tgbotapi.NewBotAPI(botToken)
+
+	// Arahkan ke domain Railway Local API Server Anda
+	customEndpoint = "https://telegram-bot-api-production-6598.up.railway.app/bot%s/%s"
+	// Inisialisasi bot langsung dengan Custom Endpoint
+	bot, err := tgbotapi.NewBotAPIWithAPIEndpoint(botToken, customEndpoint)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	// Override ke Local API Server di Railway
-	// Contoh: "https://tg-api.up.railway.app/bot%s/%s"
-	bot.APIEndpoint = "https://telegram-bot-api-production-6598.up.railway.app/bot%s/%s"
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
@@ -70,7 +68,6 @@ func getSystemMetrics() string {
 	allocMB := float64(m.Alloc) / 1024 / 1024
 	sysMB := float64(m.Sys) / 1024 / 1024
 
-	// Format output yang padat dan efisien ruang
 	return fmt.Sprintf(
 		"*Backend Performance*\n"+
 			"Uptime: `%s`\n"+
