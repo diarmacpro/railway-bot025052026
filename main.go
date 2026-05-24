@@ -12,12 +12,12 @@ import (
 var startTime = time.Now()
 
 func main() {
-	// Ganti dengan Token Bot Anda
 	botToken := "8778956451:AAFkfHFetDkvyjNM7ilk55THyiwmWBjju8Y" 
+	
+	// BARIS INI WAJIB ADA (Ganti dengan domain Railway API Anda)
+	customEndpoint := "https://telegram-bot-api-production-6598.up.railway.app/bot%s/%s"
 
-	// Arahkan ke domain Railway Local API Server Anda
-	customEndpoint = "https://telegram-bot-api-production-6598.up.railway.app/bot%s/%s"
-	// Inisialisasi bot langsung dengan Custom Endpoint
+	// Inisialisasi menggunakan variabel di atas
 	bot, err := tgbotapi.NewBotAPIWithAPIEndpoint(botToken, customEndpoint)
 	if err != nil {
 		log.Fatal(err)
@@ -27,7 +27,6 @@ func main() {
 
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
-
 	updates := bot.GetUpdatesChan(u)
 
 	for update := range updates {
@@ -41,12 +40,10 @@ func main() {
 		switch update.Message.Command() {
 		case "start":
 			msg.Text = "Sistem aktif. Gunakan /ping untuk metrik server."
-
 		case "me":
 			user := update.Message.From
 			msg.Text = fmt.Sprintf("ID: `%d`\nUsername: @%s\nName: %s %s", 
 				user.ID, user.UserName, user.FirstName, user.LastName)
-
 		case "ping":
 			msg.Text = getSystemMetrics()
 		}
@@ -57,14 +54,11 @@ func main() {
 	}
 }
 
-// getSystemMetrics menarik metrik performa backend secara real-time
 func getSystemMetrics() string {
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
 
 	uptime := time.Since(startTime).Round(time.Second)
-	
-	// Konversi byte ke Megabyte
 	allocMB := float64(m.Alloc) / 1024 / 1024
 	sysMB := float64(m.Sys) / 1024 / 1024
 
